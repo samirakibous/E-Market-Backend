@@ -1,0 +1,226 @@
+{
+  "info": {
+    "_postman_id": "b9ce5851-09bc-4fcc-8e82-7d93a5eedc23",
+    "name": "Products",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "42977502"
+  },
+  "item": [
+    {
+      "name": "Create",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"title\":\"product 1\",\r\n    \"description\":\"product description\",\r\n    \"price\":\"200\",\r\n    \"stock\":\"50\",\r\n    \"categories\":[\"68e79625cf948095d8001d14\",\"68e68fb52225b77a97b77bf7\"],\r\n    \"images\":[\"img1.png\"]\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/products",
+          "host": ["{{base_url}}"],
+          "path": ["products"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"title\":\"product 1 updated!!!\",\r\n    \"description\":\"product description\",\r\n    \"price\":\"200\",\r\n    \"stock\":\"50\",\r\n    \"categories\":[\"68e68fb52225b77a97b77bf7\"]\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/products/68e780c0103177cc928095de",
+          "host": ["{{base_url}}"],
+          "path": ["products", "68e780c0103177cc928095de"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get By id",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"title\":\"product 1\",\r\n    \"description\":\"product description\",\r\n    \"price\":\"200\",\r\n    \"stock\":\"50\",\r\n    \"categories\":[\"68e68fb52225b77a97b77bf7\"]\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/products/68e780ba103177cc928095dc",
+          "host": ["{{base_url}}"],
+          "path": ["products", "68e780ba103177cc928095dc"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/products/68e780c0103177cc928095de",
+          "host": ["{{base_url}}"],
+          "path": ["products", "68e780c0103177cc928095de"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Soft Delete",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/products/68e7894eafe7a717482a2ccc/soft",
+          "host": ["{{base_url}}"],
+          "path": ["products", "68e7894eafe7a717482a2ccc", "soft"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Restore",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/products/68e7894eafe7a717482a2ccc/restore",
+          "host": ["{{base_url}}"],
+          "path": ["products", "68e7894eafe7a717482a2ccc", "restore"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get all",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/products",
+          "host": ["{{base_url}}"],
+          "path": ["products"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get all Soft Deleted",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/products/deleted",
+          "host": ["{{base_url}}"],
+          "path": ["products", "deleted"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "search",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/products/search?categories=68e68fb52225b77a97b77bf7,68e79625cf948095d8001d14&title=product 1&minPrice=1&maxPrice=100",
+          "host": ["{{base_url}}"],
+          "path": ["products", "search"],
+          "query": [
+            {
+              "key": "categories",
+              "value": "68e68fb52225b77a97b77bf7,68e79625cf948095d8001d14"
+            },
+            {
+              "key": "title",
+              "value": "product 1"
+            },
+            {
+              "key": "minPrice",
+              "value": "1"
+            },
+            {
+              "key": "maxPrice",
+              "value": "100"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

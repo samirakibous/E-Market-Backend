@@ -1,0 +1,13 @@
+node_modules
+coverage
+logs
+uploads
+.env
+.env.example
+*.log
+test
+postman exports
+.DS_Store
+.git
+.gitignore
+c8rc.json

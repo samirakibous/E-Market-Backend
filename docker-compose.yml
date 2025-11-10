@@ -1,0 +1,56 @@
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongo_container
+    ports:
+      - '27018:27017'
+    volumes:
+      - mongotestdata:/data/db
+    networks:
+      - app-network
+    environment:
+      DB_URI: mongodb://mongo:27017/my_database
+    restart: always
+
+  api:
+    build:
+      context: .
+      dockerfile: dockerfile
+    image: mern-api-image
+    container_name: express_container
+    ports:
+      - '8000:8000'
+    depends_on:
+      - mongo
+    volumes:
+      - .:/app
+      - /app/node_modules
+    networks:
+      - app-network
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo_express
+    restart: always
+    ports:
+      - '8081:8081'
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongo
+      - ME_CONFIG_MONGODB_PORT=27017
+    depends_on:
+      - mongo
+    networks:
+      - app-network
+  redis:
+    image: redis:7
+    container_name: redis_container
+    ports:
+      - '6378:6379'
+    networks:
+      - app-network
+
+volumes:
+  mongotestdata:
+
+networks:
+  app-network:

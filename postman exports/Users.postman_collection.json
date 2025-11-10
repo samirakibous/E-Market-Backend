@@ -1,0 +1,195 @@
+{
+  "info": {
+    "_postman_id": "4c20c51a-7dca-4c69-9873-9fc5a8ad68e8",
+    "name": "Users",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "42977502"
+  },
+  "item": [
+    {
+      "name": "Create",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"fullname\": \"alex2\",\r\n  \"email\": \"alex4@gmail.com\",\r\n  \"password\": \"Alex123\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/users",
+          "host": ["{{base_url}}"],
+          "path": ["users"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"fullname\": \"Alex2\",\r\n  \"email\": \"alexzzzz@gmail.com\",\r\n  \"password\": \"Alex123\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/users/68e678e0d2a87cff299beed7",
+          "host": ["{{base_url}}"],
+          "path": ["users", "68e678e0d2a87cff299beed7"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/users/68e678e0d2a87cff299beed7",
+          "host": ["{{base_url}}"],
+          "path": ["users", "68e678e0d2a87cff299beed7"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get all",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/users",
+          "host": ["{{base_url}}"],
+          "path": ["users"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get by id",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/users/68e66b72c6e9a662de4bb642",
+          "host": ["{{base_url}}"],
+          "path": ["users", "68e66b72c6e9a662de4bb642"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Soft Delete",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/users/68e7b5b498101dd7a6ea1e0e/soft",
+          "host": ["{{base_url}}"],
+          "path": ["users", "68e7b5b498101dd7a6ea1e0e", "soft"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Restore",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/users/68e79004a50a237e1adf9bda/restore",
+          "host": ["{{base_url}}"],
+          "path": ["users", "68e79004a50a237e1adf9bda", "restore"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get all Soft Deleted",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/users/deleted",
+          "host": ["{{base_url}}"],
+          "path": ["users", "deleted"]
+        }
+      },
+      "response": []
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "reporter": ["text", "html", "lcov"],
+  "exclude": [
+    "node_modules/**",
+    "test/**/*.test.js",
+    "coverage/**",
+    "logs/**",
+    "uploads/**",
+    "public/**",
+    "postman exports/**",
+    "seeders/**",
+    ".env*"
+  ],
+  "all": true,
+  "check-coverage": true,
+  "lines": 80,
+  "functions": 80,
+  "branches": 80,
+  "statements": 80
+}

@@ -1,0 +1,195 @@
+{
+  "info": {
+    "_postman_id": "bc35f437-7092-4a8f-8b6c-23a135dfeced",
+    "name": "Categories",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "42977502"
+  },
+  "item": [
+    {
+      "name": "Create",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n \"name\":\"cat4\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/categories",
+          "host": ["{{base_url}}"],
+          "path": ["categories"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n \"name\":\"cat1\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/categories/68e68e75139258d7d83b35ee",
+          "host": ["{{base_url}}"],
+          "path": ["categories", "68e68e75139258d7d83b35ee"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/categories/68e68e75139258d7d83b35ee",
+          "host": ["{{base_url}}"],
+          "path": ["categories", "68e68e75139258d7d83b35ee"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get all",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/categories",
+          "host": ["{{base_url}}"],
+          "path": ["categories"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get By id",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/categories/68e68fb52225b77a97b77bf7",
+          "host": ["{{base_url}}"],
+          "path": ["categories", "68e68fb52225b77a97b77bf7"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Soft Delete",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/categories/68e797c28c5ada54ea460c56/soft",
+          "host": ["{{base_url}}"],
+          "path": ["categories", "68e797c28c5ada54ea460c56", "soft"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Restore",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/categories/68e797c28c5ada54ea460c56/restore",
+          "host": ["{{base_url}}"],
+          "path": ["categories", "68e797c28c5ada54ea460c56", "restore"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get all Soft Deleted",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/categories/deleted",
+          "host": ["{{base_url}}"],
+          "path": ["categories", "deleted"]
+        }
+      },
+      "response": []
+    }
+  ]
+}
