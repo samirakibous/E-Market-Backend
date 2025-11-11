@@ -255,7 +255,8 @@ export const searchProducts = async (req, res) => {
     const filter = {};
 
     if (title) {
-      filter.$text = { $search: title };
+      // filter.$text = { $search: title };
+      filter.title = { $regex: title, $options: "i" };
     }
 
     if (categories) {

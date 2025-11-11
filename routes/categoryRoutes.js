@@ -7,41 +7,41 @@ import { isAuthenticated } from '../middlewares/auth.js';
 
 const router = express.Router();
 
-router.use(isAuthenticated);
+// router.use(isAuthenticated);
 
 router.post(
   '/',
-  validate(categorySchema),
+  validate(categorySchema),isAuthenticated,
   authorizeRoles('seller', 'admin'),
   CategoryController.createCategory
 );
 router.get('/', CategoryController.getCategories);
 router.get(
-  '/deleted',
+  '/deleted',isAuthenticated,
   authorizeRoles('admin'),
   CategoryController.getDeletedCategories
 );
 
 router.patch(
-  '/:id',
+  '/:id',isAuthenticated,
   validate(categorySchema),
   authorizeRoles('admin'),
   CategoryController.updateCategory
 );
 router.delete(
-  '/:id',
+  '/:id',isAuthenticated,
   authorizeRoles('admin'),
   CategoryController.deleteCategory
 );
 router.get('/:id', CategoryController.getCategoryById);
 
 router.delete(
-  '/:id/soft',
+  '/:id/soft',isAuthenticated,
   authorizeRoles('admin'),
   CategoryController.softDeleteCategory
 );
 router.patch(
-  '/:id/restore',
+  '/:id/restore',isAuthenticated,
   authorizeRoles('admin'),
   CategoryController.restoreCategory
 );

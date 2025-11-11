@@ -89,3 +89,12 @@ export const login = async (req, res, next) => {
     next(error);
   }
 };
+
+// Logout
+export const logout = async (req, res, next) => {
+  try {
+    res.json({ message: 'Logout successful' });
+  } catch (error) {
+    next(error);
+  }
+};
