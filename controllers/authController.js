@@ -17,7 +17,11 @@ export const register = async (req, res, next) => {
     if (existingUser)
       return res.status(400).json({ message: 'Email already in use' });
 
-    const user = new User({ fullname, email, password });
+    // Vérifier si c'est le premier utilisateur
+    const userCount = await User.countDocuments();
+    const role = userCount === 0 ? 'admin' : 'client'; // premier -> admin, sinon client
+
+    const user = new User({ fullname, email, password, role });
     await user.save();
 
     // generate token
@@ -48,6 +52,7 @@ export const register = async (req, res, next) => {
     next(error);
   }
 };
+
 
 // Login
 export const login = async (req, res, next) => {
