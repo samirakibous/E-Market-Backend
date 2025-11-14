@@ -19,7 +19,7 @@ export const register = async (req, res, next) => {
 
     // Vérifier si c'est le premier utilisateur
     const userCount = await User.countDocuments();
-    const role = userCount === 0 ? 'admin' : 'client'; // premier -> admin, sinon client
+    const role = userCount === 0 ? 'admin' : 'user'; // premier -> admin, sinon user
 
     const user = new User({ fullname, email, password, role });
     await user.save();
@@ -34,7 +34,6 @@ export const register = async (req, res, next) => {
     if (sessionId) {
       await CartService.mergeCarts(user._id, sessionId);
     }
-
     res.status(201).json({
       message: 'User registered successfully',
       data: {
@@ -49,6 +48,7 @@ export const register = async (req, res, next) => {
       },
     });
   } catch (error) {
+    // Forward to centralized error handler
     next(error);
   }
 };

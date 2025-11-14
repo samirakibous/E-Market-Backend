@@ -39,14 +39,14 @@ const app = express();
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(cors({
-  // origin: 'http://localhost:5173',
-  origin: 'http://localhost:5174',
+  origin: 'http://localhost:5173',
+  // origin: 'http://localhost:5174',
   credentials: true
 }))
 app.use(express.json());
 // console.log(config);
 
-const PORT = config.port;
+const PORT = 3001;
 // console.log(process.env);
 
 if (process.env.NODE_ENV !== 'test') {
@@ -59,12 +59,12 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 // logger
-app.use(requestLogger);
+// app.use(requestLogger);
 
 // Test route
-app.get('/', (req, res) => {
-  res.send(`Server is running on http://localhost:${PORT}`);
-});
+// app.get('/', (req, res) => {
+//   res.send(`Server is running on http://localhost:${PORT}`);
+// });
 
 // Start cron jobs
 // lowStockJob.start();
