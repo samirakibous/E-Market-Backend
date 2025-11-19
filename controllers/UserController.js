@@ -7,8 +7,17 @@ import { randomBytes } from "crypto";
 
 export const createUser = async (req, res, next) => {
   try {
-    const rawPassword = req.body.password; // conserver le mot de passe en clair pour l'email
-    const user = new User(req.body);
+    // Générer un mot de passe aléatoire si non fourni
+    let password = req.body.password;
+    if (!password) {
+      password = Math.random().toString(36).slice(-8); // mot de passe aléatoire 8 caractères
+    }
+
+    // Créer l'utilisateur avec le password (généré ou fourni)
+    const user = new User({
+      ...req.body,
+      password, // s'assurer que password est présent
+    });
     await user.save();
 
     // Envoyer un email avec les identifiants (non bloquant)
@@ -16,12 +25,12 @@ export const createUser = async (req, res, next) => {
       await sendMail({
         to: user.email,
         subject: 'Vos identifiants E-Market',
-        text: `Bonjour ${user.fullname},\n\nVotre compte a été créé. Email: ${user.email}\nMot de passe: ${rawPassword}\n\nVeuillez changer votre mot de passe après la première connexion.`,
+        text: `Bonjour ${user.fullname},\n\nVotre compte a été créé. Email: ${user.email}\nMot de passe: ${password}\n\nVeuillez changer votre mot de passe après la première connexion.`,
         html: `<p>Bonjour ${user.fullname},</p>
                <p>Votre compte a été créé.</p>
                <ul>
                  <li><strong>Email:</strong> ${user.email}</li>
-                 <li><strong>Mot de passe:</strong> ${rawPassword}</li>
+                 <li><strong>Mot de passe:</strong> ${password}</li>
                </ul>
                <p>Veuillez changer votre mot de passe après la première connexion.</p>`,
       });
