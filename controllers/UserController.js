@@ -1,19 +1,22 @@
 import User from '../models/User.js';
+import Product from '../models/Product.js';
+import Order from '../models/Order.js';
+import Review from '../models/Review.js';
 import path from 'path';
 import fs from 'fs';
 import bcrypt from 'bcryptjs';
 import { sendMail } from '../services/mailSender.js'; // <-- ajouté
-import { randomBytes } from "crypto";
 
 export const createUser = async (req, res, next) => {
   try {
-    // Générer un mot de passe aléatoire si non fourni
-    let password = req.body.password;
-    if (!password) {
-      password = Math.random().toString(36).slice(-8); // mot de passe aléatoire 8 caractères
-    }
+
+    let password = Math.random().toString(36).slice(-8); // mot de passe aléatoire 8 caractères
 
     // Créer l'utilisateur avec le password (généré ou fourni)
+    console.log({
+      ...req.body,
+      password,
+    });
     const user = new User({
       ...req.body,
       password, // s'assurer que password est présent
@@ -269,7 +272,98 @@ export const filterUsersByRole = async (req, res, next) => {
         .json({ message: `no usesr found with role ${role}` });
     res.status(200).json({
       message: 'Users found',
-      data: { count: users.length, users },
+      data: { count: users.length, users }, 
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getSellerStats = async (req, res, next) => {
+  try {
+    const sellerId = req.user.id;
+
+    const productIds = await Product.find({ seller_id: sellerId, deletedAt: null }).distinct('_id');
+
+    const productsCount = await Product.countDocuments({ seller_id: sellerId, deletedAt: null });
+    const lowStockCount = await Product.countDocuments({ seller_id: sellerId, stock: { $lte: 5 }, deletedAt: null });
+
+    const orderAgg = await Order.aggregate([
+      { $unwind: '$items' },
+      { $match: { 'items.productId': { $in: productIds.map((id) => id) } } },
+      {
+        $group: {
+          _id: null,
+          totalOrders: { $sum: 1 },
+          totalRevenue: { $sum: { $multiply: ['$items.price', '$items.quantity'] } },
+        },
+      },
+    ]);
+
+    const totalOrders = orderAgg[0]?.totalOrders || 0;
+    const totalRevenue = orderAgg[0]?.totalRevenue.toFixed(2) || 0;
+
+    const reviewAgg = await Review.aggregate([
+      { $match: { product: { $in: productIds.map((id) => id) }, status: 'approved' } },
+      {
+        $group: {
+          _id: null,
+          averageRating: { $avg: '$rating' },
+          totalReviews: { $sum: 1 },
+        },
+      },
+    ]);
+    const averageRating = reviewAgg[0]?.averageRating || 0;
+    const totalReviews = reviewAgg[0]?.totalReviews || 0;
+
+    const topProductsAgg = await Order.aggregate([
+      { $unwind: '$items' },
+      {
+        $match: {
+          'items.productId': { $in: productIds.map((id) => id) },
+          'status': 'delivered'
+        }
+      },
+      {
+        $group: {
+          _id: '$items.productId',
+          quantitySold: { $sum: '$items.quantity' },
+          revenue: { $sum: { $multiply: ['$items.price', '$items.quantity'] } },
+        },
+      },
+      { $sort: { quantitySold: -1 } },
+      { $limit: 5 },
+      {
+        $lookup: {
+          from: 'products',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'product',
+        },
+      },
+      { $unwind: { path: '$product', preserveNullAndEmptyArrays: true } },
+      {
+        $project: {
+          productId: '$_id',
+          title: '$product.title',
+          primaryImage: '$product.primaryImage',
+          quantitySold: 1,
+          revenue: 1,
+        },
+      },
+    ]);
+
+    res.status(200).json({
+      message: 'Seller stats retrieved',
+      data: {
+        productsCount,
+        totalOrders,
+        totalRevenue,
+        averageRating: Number(averageRating.toFixed(2)),
+        totalReviews,
+        lowStockCount,
+        topProducts: topProductsAgg,
+      },
     });
   } catch (error) {
     next(error);
