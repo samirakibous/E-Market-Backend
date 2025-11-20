@@ -19,7 +19,7 @@ export const register = async (req, res, next) => {
 
     // Vérifier si c'est le premier utilisateur
     const userCount = await User.countDocuments();
-    const role = userCount === 0 ? 'admin' : 'user'; // premier -> admin, sinon user
+    const role = userCount === 0 ? 'admin' : 'user'; // premier -> admin, sinon client
 
     const user = new User({ fullname, email, password, role });
     await user.save();

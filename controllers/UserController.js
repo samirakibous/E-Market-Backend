@@ -2,11 +2,42 @@ import User from '../models/User.js';
 import path from 'path';
 import fs from 'fs';
 import bcrypt from 'bcryptjs';
+import { sendMail } from '../services/mailSender.js'; // <-- ajouté
+import { randomBytes } from "crypto";
 
 export const createUser = async (req, res, next) => {
   try {
-    const user = new User(req.body);
+    // Générer un mot de passe aléatoire si non fourni
+    let password = req.body.password;
+    if (!password) {
+      password = Math.random().toString(36).slice(-8); // mot de passe aléatoire 8 caractères
+    }
+
+    // Créer l'utilisateur avec le password (généré ou fourni)
+    const user = new User({
+      ...req.body,
+      password, // s'assurer que password est présent
+    });
     await user.save();
+
+    // Envoyer un email avec les identifiants (non bloquant)
+    try {
+      await sendMail({
+        to: user.email,
+        subject: 'Vos identifiants E-Market',
+        text: `Bonjour ${user.fullname},\n\nVotre compte a été créé. Email: ${user.email}\nMot de passe: ${password}\n\nVeuillez changer votre mot de passe après la première connexion.`,
+        html: `<p>Bonjour ${user.fullname},</p>
+               <p>Votre compte a été créé.</p>
+               <ul>
+                 <li><strong>Email:</strong> ${user.email}</li>
+                 <li><strong>Mot de passe:</strong> ${password}</li>
+               </ul>
+               <p>Veuillez changer votre mot de passe après la première connexion.</p>`,
+      });
+    } catch (mailErr) {
+      console.warn('Failed to send welcome email:', mailErr);
+      // Ne pas échouer la requête si l'email échoue : on renvoie quand même 201
+    }
 
     res.status(201).json({
       message: 'User created successfully',
