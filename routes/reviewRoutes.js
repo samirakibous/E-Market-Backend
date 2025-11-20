@@ -248,6 +248,9 @@ router.put(
  *         description: Review not found
  */
 router.delete('/:id', checkReviewOwnership, reviewController.deleteReview);
+
+router.delete('/admin/:id', authorizeRoles('admin'), reviewController.deleteReview);
+
 /**
  * @swagger
  * tags:

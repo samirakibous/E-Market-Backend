@@ -85,6 +85,13 @@ router.put(
   userController.changeRole
 );
 
+router.get(
+  '/me/stats',
+  isAuthenticated,
+  authorizeRoles('seller'),
+  userController.getSellerStats
+)
+
 export default router;
 
 /**
