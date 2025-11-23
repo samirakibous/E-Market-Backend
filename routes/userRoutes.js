@@ -9,6 +9,9 @@ import { authorizeRoles } from '../middlewares/roles.js';
 import { adminCreateUserSchema } from '../validations/adminSchema.js';
 
 const router = express.Router();
+
+router.get('/public/:id/username', userController.getPublicUsernameById);
+
 router.use(isAuthenticated);
 
 router.get(
