@@ -16,7 +16,7 @@ router.post('/logout', isAuthenticated, logout);
 // Example of protected route
 // Example of protected route
 // Example of protected route
-router.get('/profile', isAuthenticated, isAdmin, (req, res) => {
+router.get('/profile', isAuthenticated, (req, res) => {
   res.json({ message: `Welcome, user ${req.user.id}`, user: req.user });
 });
 
