@@ -157,6 +157,24 @@ export const getUserById = async (req, res, next) => {
   }
 };
 
+// Public: return only minimal user info (fullname / name) for public consumption
+export const getPublicUsernameById = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id).select('fullname');
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    // prefer fullname, then name, then username
+    const displayName = user.fullname || user.name || user.username || null;
+
+    return res.status(200).json({
+      message: 'Public user info retrieved',
+      data: { id: user._id, name: displayName },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // Soft delete user
 export const softDeleteUser = async (req, res, next) => {
   try {

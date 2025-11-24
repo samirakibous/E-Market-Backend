@@ -13,9 +13,16 @@ export const createCoupon = async (req, res, next) => {
           error: `Access denied: admin and seller only : ${req.user.role}`,
         });
     }
+    // Prefer the authenticated user id, fallback to createdBy in request body
+    const creatorId = (req.user && req.user.id) || req.body?.createdBy;
+    if (!creatorId) {
+      // return a clear validation-like response so frontend can display it
+      return res.status(400).json({ errors: { createdBy: 'Creator is required' } });
+    }
+
     const coupon = new Coupon({
       ...req.body,
-      createdBy: req.user.id,
+      createdBy: creatorId,
     });
     await coupon.save();
     res
