@@ -34,4 +34,33 @@ router.get('/profile', isAuthenticated, async (req, res) => {
   }
 });
 
+router.put('/profile', isAuthenticated, async (req, res) => {
+  try {
+    const { fullname, email, password } = req.body;
+
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update user fields if provided
+    if (fullname) user.fullname = fullname;
+    if (email) user.email = email;
+    if (password) user.password = password; // Ensure password hashing is handled in the User model
+
+    await user.save();
+
+    res.json({
+      message: "Profile updated successfully",
+      user: {
+        fullname: user.fullname,
+        email: user.email,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 export default router;
