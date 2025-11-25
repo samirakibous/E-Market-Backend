@@ -40,13 +40,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(cors({
   origin: 'http://localhost:5173',
-  // origin: 'http://localhost:5174',
+  // origin: 'process.env.CLIENT_URL',
   credentials: true
 }))
 app.use(express.json());
 // console.log(config);
 
-const PORT = 3001;
+// const PORT = 3001;
+const PORT = process.env.PORT || 3000;
 // console.log(process.env);
 
 if (process.env.NODE_ENV !== 'test') {
