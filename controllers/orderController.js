@@ -5,8 +5,9 @@ import { notificationEmitter } from '../events/notificationEmitter.js';
 import Product from '../models/Product.js';
 
 export const createOrder = async (req, res, next) => {
+  console.log("REQ.USER =", req.user);
   let session = null;
-  
+
   try {
     // Only use transactions in production or when explicitly supported
     if (process.env.NODE_ENV === 'production') {
@@ -18,7 +19,7 @@ export const createOrder = async (req, res, next) => {
     const couponCodes = req.body.coupons || [];
 
     const result = await OrderService.createOrder(userId, couponCodes, session);
-    
+
     const productIds = result.order.items.map((i) => i.productId);
     const products = await Product.find(
       { _id: { $in: productIds } },
@@ -126,7 +127,10 @@ export const updateOrderStatus = async (req, res, next) => {
 // get all orders
 export const getOrders = async (req, res, next) => {
   try {
-    const orders = await Order.find().notDeleted();
+    const orders = await Order.find().notDeleted().populate("userId", "fullname email")
+      .populate("items.productId", "title price primaryImage")
+    console.log(JSON.stringify(orders, null, 2));
+
     res.status(200).json({
       success: true,
       message: 'Orders retrieved successfully',
@@ -189,7 +193,9 @@ export const getDeletedOrders = async (req, res, next) => {
 export const getUserOrders = async (req, res, next) => {
   try {
     const { userId } = req.params;
-    const orders = await Order.find({ userId }).notDeleted();
+    const orders = await Order.find({ userId }).notDeleted()
+      .populate("userId", "fullname email")
+      .populate("items.productId", "title price primaryImage");
     res.status(200).json({
       success: true,
       message: 'Orders retrieved successfully',
@@ -199,3 +205,14 @@ export const getUserOrders = async (req, res, next) => {
     next(error);
   }
 };
+// get seller orders
+export const getSellerOrders = async (req, res) => {
+  const sellerId = req.user.id;
+
+  const orders = await Order.find({
+    "items.sellerId": sellerId
+  }).populate("items.productId"); 
+
+  res.json({ success: true, data: orders });
+};
+

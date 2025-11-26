@@ -12,6 +12,7 @@ import reviewRoutes from './routes/reviewRoutes.js';
 import cartRoutes from './routes/cartRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
 import './events/notificationListener.js';
 import './events/orderListener.js';
 import './jobs/lowStockNotifier.js';
@@ -39,8 +40,8 @@ const app = express();
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(cors({
-  // origin: 'http://localhost:5173',
-  origin: 'http://localhost:5174',
+  origin: 'http://localhost:5173',
+  // origin: 'http://localhost:5174',
   credentials: true
 }))
 app.use(express.json());
@@ -86,6 +87,7 @@ app.use('/api/cart', isAuthenticated, cartRoutes);
 app.use('/api/guest-cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/admin', adminRoutes);
 app.get("/api/test", (req, res) => {
   res.json({ message: "Connexion réussie ✅" });
 });

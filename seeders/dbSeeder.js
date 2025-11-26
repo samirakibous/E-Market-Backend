@@ -46,7 +46,7 @@ const seedDB = async () => {
       password: 'password',
       role: 'user',
     });
-    await userFactory(5); // seed users
+    // await userFactory(5); // seed users
     await categoryFactory(6); // seed categories
 
     // Get users to create carts for them
