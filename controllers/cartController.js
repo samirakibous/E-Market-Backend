@@ -19,7 +19,7 @@ export const getCart = async (req, res, next) => {
 
     const cart = await Cart.findOne(identifier).populate(
       'items.productId',
-      'title price images'
+      'title price primaryImage images'
     );
 
     if (!cart) {

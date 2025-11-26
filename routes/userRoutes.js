@@ -6,10 +6,20 @@ import { checkOwnership } from '../middlewares/ownershipMiddleware.js';
 import { createUpload } from '../config/multerConfig.js';
 import { isAuthenticated } from '../middlewares/auth.js';
 import { authorizeRoles } from '../middlewares/roles.js';
+import { adminCreateUserSchema } from '../validations/adminSchema.js';
 
 const router = express.Router();
+
+router.get('/public/:id/username', userController.getPublicUsernameById);
+
 router.use(isAuthenticated);
 
+router.get(
+  '/roles',
+  isAuthenticated,
+  authorizeRoles('admin'),
+  userController.getRoles
+);
 router.get(
   '/filter',
   isAuthenticated,
@@ -19,7 +29,7 @@ router.get(
 router.get('/sellers', userController.searchSellers);
 router.post(
   '/',
-  validate(userSchema),
+  validate(adminCreateUserSchema),
   isAuthenticated,
   authorizeRoles('admin'),
   userController.createUser
@@ -83,6 +93,15 @@ router.put(
   authorizeRoles('admin'),
   userController.changeRole
 );
+
+router.get(
+  '/me/stats',
+  isAuthenticated,
+  authorizeRoles('seller'),
+  userController.getSellerStats
+)
+
+
 
 export default router;
 

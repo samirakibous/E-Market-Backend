@@ -22,6 +22,8 @@ services:
       - '8000:8000'
     depends_on:
       - mongo
+    environment:
+      - .env.development
     volumes:
       - .:/app
       - /app/node_modules

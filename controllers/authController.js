@@ -34,7 +34,6 @@ export const register = async (req, res, next) => {
     if (sessionId) {
       await CartService.mergeCarts(user._id, sessionId);
     }
-
     res.status(201).json({
       message: 'User registered successfully',
       data: {
@@ -49,6 +48,7 @@ export const register = async (req, res, next) => {
       },
     });
   } catch (error) {
+    // Forward to centralized error handler
     next(error);
   }
 };

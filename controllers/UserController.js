@@ -1,12 +1,46 @@
 import User from '../models/User.js';
+import Product from '../models/Product.js';
+import Order from '../models/Order.js';
+import Review from '../models/Review.js';
 import path from 'path';
 import fs from 'fs';
 import bcrypt from 'bcryptjs';
+import { sendMail } from '../services/mailSender.js'; // <-- ajouté
 
 export const createUser = async (req, res, next) => {
   try {
-    const user = new User(req.body);
+
+    let password = Math.random().toString(36).slice(-8); // mot de passe aléatoire 8 caractères
+
+    // Créer l'utilisateur avec le password (généré ou fourni)
+    console.log({
+      ...req.body,
+      password,
+    });
+    const user = new User({
+      ...req.body,
+      password, // s'assurer que password est présent
+    });
     await user.save();
+
+    // Envoyer un email avec les identifiants (non bloquant)
+    try {
+      await sendMail({
+        to: user.email,
+        subject: 'Vos identifiants E-Market',
+        text: `Bonjour ${user.fullname},\n\nVotre compte a été créé. Email: ${user.email}\nMot de passe: ${password}\n\nVeuillez changer votre mot de passe après la première connexion.`,
+        html: `<p>Bonjour ${user.fullname},</p>
+               <p>Votre compte a été créé.</p>
+               <ul>
+                 <li><strong>Email:</strong> ${user.email}</li>
+                 <li><strong>Mot de passe:</strong> ${password}</li>
+               </ul>
+               <p>Veuillez changer votre mot de passe après la première connexion.</p>`,
+      });
+    } catch (mailErr) {
+      console.warn('Failed to send welcome email:', mailErr);
+      // Ne pas échouer la requête si l'email échoue : on renvoie quand même 201
+    }
 
     res.status(201).json({
       message: 'User created successfully',
@@ -117,6 +151,24 @@ export const getUserById = async (req, res, next) => {
     res.status(200).json({
       message: 'User retrieved successfully',
       data: { user },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Public: return only minimal user info (fullname / name) for public consumption
+export const getPublicUsernameById = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id).select('fullname');
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    // prefer fullname, then name, then username
+    const displayName = user.fullname || user.name || user.username || null;
+
+    return res.status(200).json({
+      message: 'Public user info retrieved',
+      data: { id: user._id, name: displayName },
     });
   } catch (error) {
     next(error);
@@ -238,8 +290,116 @@ export const filterUsersByRole = async (req, res, next) => {
         .json({ message: `no usesr found with role ${role}` });
     res.status(200).json({
       message: 'Users found',
-      data: { count: users.length, users },
+      data: { count: users.length, users }, 
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getSellerStats = async (req, res, next) => {
+  try {
+    const sellerId = req.user.id;
+
+    const productIds = await Product.find({ seller_id: sellerId, deletedAt: null }).distinct('_id');
+
+    const productsCount = await Product.countDocuments({ seller_id: sellerId, deletedAt: null });
+    const lowStockCount = await Product.countDocuments({ seller_id: sellerId, stock: { $lte: 5 }, deletedAt: null });
+
+    const orderAgg = await Order.aggregate([
+      { $unwind: '$items' },
+      { $match: { 'items.productId': { $in: productIds.map((id) => id) } } },
+      {
+        $group: {
+          _id: null,
+          totalOrders: { $sum: 1 },
+          totalRevenue: { $sum: { $multiply: ['$items.price', '$items.quantity'] } },
+        },
+      },
+    ]);
+
+    const totalOrders = orderAgg[0]?.totalOrders || 0;
+    const totalRevenue = orderAgg[0]?.totalRevenue.toFixed(2) || 0;
+
+    const reviewAgg = await Review.aggregate([
+      { $match: { product: { $in: productIds.map((id) => id) }, status: 'approved' } },
+      {
+        $group: {
+          _id: null,
+          averageRating: { $avg: '$rating' },
+          totalReviews: { $sum: 1 },
+        },
+      },
+    ]);
+    const averageRating = reviewAgg[0]?.averageRating || 0;
+    const totalReviews = reviewAgg[0]?.totalReviews || 0;
+
+    const topProductsAgg = await Order.aggregate([
+      { $unwind: '$items' },
+      {
+        $match: {
+          'items.productId': { $in: productIds.map((id) => id) },
+          'status': 'delivered'
+        }
+      },
+      {
+        $group: {
+          _id: '$items.productId',
+          quantitySold: { $sum: '$items.quantity' },
+          revenue: { $sum: { $multiply: ['$items.price', '$items.quantity'] } },
+        },
+      },
+      { $sort: { quantitySold: -1 } },
+      { $limit: 5 },
+      {
+        $lookup: {
+          from: 'products',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'product',
+        },
+      },
+      { $unwind: { path: '$product', preserveNullAndEmptyArrays: true } },
+      {
+        $project: {
+          productId: '$_id',
+          title: '$product.title',
+          primaryImage: '$product.primaryImage',
+          quantitySold: 1,
+          revenue: 1,
+        },
+      },
+    ]);
+
+    res.status(200).json({
+      message: 'Seller stats retrieved',
+      data: {
+        productsCount,
+        totalOrders,
+        totalRevenue,
+        averageRating: Number(averageRating.toFixed(2)),
+        totalReviews,
+        lowStockCount,
+        topProducts: topProductsAgg,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+export const getRoles = async (req, res, next) => {
+  try {
+    const roles = await User.distinct('role'); // ["user","admin","seller"]
+
+    // Transformation pour le frontend
+    const formattedRoles = roles.map(role => ({
+      value: role,
+      label: role.charAt(0).toUpperCase() + role.slice(1) // "admin" -> "Admin"
+    }));
+
+    res.status(200).json({ message: 'Roles found', data: formattedRoles });
   } catch (error) {
     next(error);
   }

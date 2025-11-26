@@ -47,7 +47,8 @@ app.use(cors({
 app.use(express.json());
 // console.log(config);
 
-const PORT = config.port;
+// const PORT = 3001;
+const PORT = process.env.PORT || 3000;
 // console.log(process.env);
 
 if (process.env.NODE_ENV !== 'test') {
@@ -60,12 +61,12 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 // logger
-app.use(requestLogger);
+// app.use(requestLogger);
 
 // Test route
-app.get('/', (req, res) => {
-  res.send(`Server is running on http://localhost:${PORT}`);
-});
+// app.get('/', (req, res) => {
+//   res.send(`Server is running on http://localhost:${PORT}`);
+// });
 
 // Start cron jobs
 // lowStockJob.start();
