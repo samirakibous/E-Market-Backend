@@ -387,3 +387,20 @@ export const getSellerStats = async (req, res, next) => {
     next(error);
   }
 };
+
+
+export const getRoles = async (req, res, next) => {
+  try {
+    const roles = await User.distinct('role'); // ["user","admin","seller"]
+
+    // Transformation pour le frontend
+    const formattedRoles = roles.map(role => ({
+      value: role,
+      label: role.charAt(0).toUpperCase() + role.slice(1) // "admin" -> "Admin"
+    }));
+
+    res.status(200).json({ message: 'Roles found', data: formattedRoles });
+  } catch (error) {
+    next(error);
+  }
+};

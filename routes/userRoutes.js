@@ -15,6 +15,12 @@ router.get('/public/:id/username', userController.getPublicUsernameById);
 router.use(isAuthenticated);
 
 router.get(
+  '/roles',
+  isAuthenticated,
+  authorizeRoles('admin'),
+  userController.getRoles
+);
+router.get(
   '/filter',
   isAuthenticated,
   authorizeRoles('admin'),
@@ -94,6 +100,8 @@ router.get(
   authorizeRoles('seller'),
   userController.getSellerStats
 )
+
+
 
 export default router;
 
