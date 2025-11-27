@@ -46,11 +46,11 @@ app.use(cors({
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// app.use(cors({
-//   origin: 'http://localhost:5173',
-//   // origin: 'http://localhost:5174',
-//   credentials: true
-// }))
+app.use(cors({
+  origin: import.meta.env.VITE_FRONTEND_URL,
+  // origin: 'http://localhost:5174',
+  credentials: true
+}))
 app.use(express.json());
 // console.log(config);
 
