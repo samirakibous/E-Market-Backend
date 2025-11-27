@@ -37,13 +37,20 @@ dotenv.config({ path: `./.env.${env}` });
 const uri = process.env.DB_URI;
 //dotenv.config();
 const app = express();
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://e-market-luna-luxe-fork-7rjn9svmr.vercel.app"
+  ],
+  credentials: true
+}));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(cors({
-  origin: 'http://localhost:5173',
-  // origin: 'http://localhost:5174',
-  credentials: true
-}))
+// app.use(cors({
+//   origin: 'http://localhost:5173',
+//   // origin: 'http://localhost:5174',
+//   credentials: true
+// }))
 app.use(express.json());
 // console.log(config);
 
@@ -96,6 +103,9 @@ app.get("/api/test", (req, res) => {
 // Catch all unknown routes
 app.use(notFound);
 app.use(errorHandler);
+
+// CORS (mettre avant les routes !!)
+
 
 
 
