@@ -208,11 +208,12 @@ export const getUserOrders = async (req, res, next) => {
 // get seller orders
 export const getSellerOrders = async (req, res) => {
   const sellerId = req.user.id;
-
+ 
+  const products = await Product.find({seller_id: sellerId});
+  
   const orders = await Order.find({
-    "items.sellerId": sellerId
-  }).populate("items.productId"); 
-
+    "items.productId": {$in: products.map(p => p._id)}
+  });
   res.json({ success: true, data: orders });
 };
 
