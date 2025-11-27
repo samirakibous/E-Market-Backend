@@ -40,7 +40,7 @@ const app = express();
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: import.meta.env.VITE_FRONTEND_URL,
   // origin: 'http://localhost:5174',
   credentials: true
 }))
