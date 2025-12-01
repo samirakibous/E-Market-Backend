@@ -4,6 +4,7 @@ import { isAuthenticated, isAdmin } from '../middlewares/auth.js';
 import { authorizeRoles } from '../middlewares/roles.js';
 import { isAdminOrOwner } from '../middlewares/adminOrOwne.js';
 import { getLimiter, modifyLimiter } from '../middlewares/rateLimiter.js';
+import Order from '../models/Order.js';
 
 const router = express.Router();
 
@@ -12,6 +13,7 @@ router.use(isAuthenticated);
 router.get('/', getLimiter, OrderController.getOrders);
 router.get('/deleted', isAdmin, getLimiter, OrderController.getDeletedOrders);
 router.get('/seller',  authorizeRoles('seller'),getLimiter, OrderController.getSellerOrders);
+
 router.get(
   '/:userId',
   isAuthenticated,

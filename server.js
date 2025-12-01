@@ -28,6 +28,7 @@ import swaggerOptions from './config/swagger.js';
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import Order from './models/Order.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -40,14 +41,14 @@ const app = express();
 app.use(cors({
   origin: [
     "http://localhost:5173",
-    "https://e-market-luna-luxe-fork-7rjn9svmr.vercel.app"
+    // "https://e-market-luna-luxe-fork-7rjn9svmr.vercel.app"
   ],
   credentials: true
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(cors({
-  origin: import.meta.env.VITE_FRONTEND_URL,
+  // origin: import.meta.env.VITE_FRONTEND_URL,
   // origin: 'http://localhost:5174',
   credentials: true
 }))
@@ -106,7 +107,16 @@ app.use(errorHandler);
 
 // CORS (mettre avant les routes !!)
 
-
+app.get("/orders/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const order = await Order.findById(id).populate("items.productId");
+    if (!order) return res.status(404).json({ message: "Order not found" });
+    res.json({ data: order });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
 
 
 

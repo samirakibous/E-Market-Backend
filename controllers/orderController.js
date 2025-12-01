@@ -217,3 +217,5 @@ export const getSellerOrders = async (req, res) => {
   res.json({ success: true, data: orders });
 };
 
+// GET /orders/:id
+
