@@ -41,6 +41,7 @@ const app = express();
 app.use(cors({
   origin: [
     "http://localhost:5173",
+    "https://e-merket-lunaluxe.vercel.app",
     // "https://e-market-luna-luxe-fork-7rjn9svmr.vercel.app"
   ],
   credentials: true
