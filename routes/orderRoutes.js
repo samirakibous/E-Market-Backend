@@ -10,6 +10,8 @@ const router = express.Router();
 
 router.use(isAuthenticated);
 
+
+router.get('/:id', getLimiter, OrderController.getOrderById);
 router.get('/', getLimiter, OrderController.getOrders);
 router.get('/deleted', isAdmin, getLimiter, OrderController.getDeletedOrders);
 router.get('/seller',  authorizeRoles('seller'),getLimiter, OrderController.getSellerOrders);
