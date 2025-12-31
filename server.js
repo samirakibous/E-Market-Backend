@@ -40,19 +40,18 @@ const uri = process.env.DB_URI;
 const app = express();
 app.use(cors({
   origin: [
+    
     "http://localhost:5173",
-    "https://e-merket-lunaluxe.vercel.app",
-    // "https://e-market-luna-luxe-fork-7rjn9svmr.vercel.app"
+    "https://e-merket-lunaluxe.vercel.app/"
   ],
   credentials: true
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(cors({
-  // origin: import.meta.env.VITE_FRONTEND_URL,
-  // origin: 'http://localhost:5174',
-  credentials: true
-}))
+// app.use(cors({
+//   origin: '*',
+//   credentials: true
+// }))
 app.use(express.json());
 // console.log(config);
 
@@ -64,7 +63,7 @@ if (process.env.NODE_ENV !== 'test') {
   // Connect to MongoDB
   connectDB();
   // Start server
-  app.listen(PORT,() =>
+  app.listen(PORT, () =>
     console.log(`Server running on http://localhost:${PORT}`)
   );
 }
